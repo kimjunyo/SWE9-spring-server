@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/sungdaehanmarket
-    username: root
-    password:
+    url: jdbc:mysql://swe9.comit-server.com:3306/SWE9DB
+    username: swe9
+    password: 234567890
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
