@@ -42,4 +42,4 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy Application
-        run: ssh -o StrictHostKeyChecking=no ubuntu@swe9.comit-server.com "cd /home/ubuntu/SWE9-spring-server && ./deploy.sh"
+        run: ssh -o StrictHostKeyChecking=no ubuntu@swe9.comit-server.com "cd /home/ubuntu && ./deploy.sh"
