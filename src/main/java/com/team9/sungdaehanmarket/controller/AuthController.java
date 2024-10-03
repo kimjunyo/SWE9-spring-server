@@ -1,9 +1,11 @@
 package com.team9.sungdaehanmarket.controller;
 
+import com.team9.sungdaehanmarket.dto.ApiResponse;
 import com.team9.sungdaehanmarket.entity.User;
 import com.team9.sungdaehanmarket.repository.UserRepository;
 import com.team9.sungdaehanmarket.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,6 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // BCryptPasswordEncoder 추가
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/login")
@@ -36,20 +37,23 @@ public class AuthController {
             User user = userOpt.get();
             String token = jwtUtil.generateToken(user.getIdx(), user.getUsername());
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("status", 200);
-            response.put("message", "Login successful");
-
             Map<String, String> content = new HashMap<>();
             content.put("token", token);
-            response.put("content", content);
+
+            ApiResponse<Map<String, String>> response = new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "Login successful",
+                    content
+            );
 
             return ResponseEntity.ok().body(response);
         } else {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("status", 401);
-            errorResponse.put("message", "Invalid username or password");
-            return ResponseEntity.status(401).body(errorResponse);
+            ApiResponse<String> errorResponse = new ApiResponse<>(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid username or password",
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
 }

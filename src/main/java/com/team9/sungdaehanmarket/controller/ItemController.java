@@ -43,7 +43,8 @@ public class ItemController {
 
         List<ItemResponseDto> items = itemService.getItems(userId);
 
-        ApiResponse<ItemResponseDto> response = new ApiResponse<>(
+        // 리스트 응답
+        ApiResponse<List<ItemResponseDto>> response = new ApiResponse<>(
                 HttpStatus.OK.value(),
                 "Items retrieved successfully",
                 items

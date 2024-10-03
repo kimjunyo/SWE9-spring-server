@@ -1,13 +1,11 @@
 package com.team9.sungdaehanmarket.dto;
 
-import java.util.List;
-
 public class ApiResponse<T> {
     private int status;
     private String message;
-    private List<T> content;
+    private T content;  // T로 설정하여 유연성 확보
 
-    public ApiResponse(int status, String message, List<T> content) {
+    public ApiResponse(int status, String message, T content) {
         this.status = status;
         this.message = message;
         this.content = content;
@@ -30,11 +28,11 @@ public class ApiResponse<T> {
         this.message = message;
     }
 
-    public List<T> getContent() {
+    public T getContent() {
         return content;
     }
 
-    public void setContent(List<T> content) {
+    public void setContent(T content) {
         this.content = content;
     }
 }
