@@ -40,6 +40,9 @@ jobs:
           echo "S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}" >> .env
           echo "S3_STATIC=${{ secrets.S3_STATIC }}" >> .env
 
+      - name: Apply environment variables
+        run: source .env
+
       - name: Build with Gradle
         run: ./gradlew clean build
 
