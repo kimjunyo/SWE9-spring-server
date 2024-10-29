@@ -1,0 +1,3 @@
+.idea
+.gradle
+src/main/resources/dev.env
