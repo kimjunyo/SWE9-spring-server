@@ -71,4 +71,8 @@ jobs:
           export DB_URL=${{ secrets.DB_URL }};
           export DB_USERNAME=${{ secrets.DB_USERNAME }};
           export DB_PASSWORD=${{ secrets.DB_PASSWORD }};
+          export BUCKET_NAME=${{ secrets.BUCKET_NAME }};
+          export S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }};
+          export S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }};
+          export S3_STATIC=${{ secrets.S3_STATIC }};
           cd /home/ubuntu && ./deploy.sh"
