@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
-    @Query("SELECT u.idx FROM User u JOIN u.favoriteItems f WHERE u.idx = :userId")
+    @Query("SELECT u.favoriteItems FROM User u WHERE u.idx = :userId")
     List<Long> findFavoriteItemsByIdx(@Param("userId") Long userId);
     // 이메일이 존재하는지 확인하는 메서드
     boolean existsByEmail(String email);

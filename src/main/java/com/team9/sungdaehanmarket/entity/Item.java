@@ -56,4 +56,7 @@ public class Item {
         ELECTRONICS,
         OTHER
     }
+
+    @Transient
+    private Boolean isFavorite;  // 사용자별로 좋아요 상태를 추적하기 위한 필드
 }
