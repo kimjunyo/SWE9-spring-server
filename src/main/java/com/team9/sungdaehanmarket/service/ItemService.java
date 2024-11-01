@@ -1,5 +1,6 @@
 package com.team9.sungdaehanmarket.service;
 
+import com.team9.sungdaehanmarket.dto.ItemDetailResponse;
 import com.team9.sungdaehanmarket.dto.ItemResponseDto;
 import com.team9.sungdaehanmarket.dto.ApiResponse;
 import com.team9.sungdaehanmarket.entity.Item;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -96,5 +98,34 @@ public class ItemService {
         }
         System.out.println("User 또는 Item을 찾을 수 없음 - userId: " + userId + ", itemIdx: " + itemIdx);
         return false;
+    }
+
+    public ItemDetailResponse getItemDetail(Long itemIdx, Long userId) {
+        Optional<Item> itemOpt = itemRepository.findById(itemIdx);
+
+        if (itemOpt.isEmpty()) {
+            // 아이템이 없을 경우, 상태 코드와 메시지를 포함한 응답을 반환
+            return new ItemDetailResponse(HttpStatus.NOT_FOUND.value(), "Item not found", null);
+        }
+
+        Item item = itemOpt.get();
+
+        // 유저가 해당 아이템을 좋아요했는지 여부 확인 (ItemRepository 메서드 사용)
+        boolean isFavorite = itemRepository.isItemFavoritedByUser(userId, item.getIdx());
+
+        // Item 정보를 기반으로 ItemDetailResponse.Content 생성
+        ItemDetailResponse.Content content = new ItemDetailResponse.Content(
+                item.getPhotos(),
+                item.getTitle(),
+                item.getUploadedAt().format(DateTimeFormatter.ISO_DATE),
+                item.getLikes(),
+                item.getDescription(),
+                item.getPrice(),
+                item.getIsOfferAccepted(),
+                isFavorite
+        );
+
+        // ItemDetailResponse 생성 후 반환
+        return new ItemDetailResponse(HttpStatus.OK.value(), "Item detail retrieved successfully", content);
     }
 }

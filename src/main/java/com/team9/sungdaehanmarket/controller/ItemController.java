@@ -1,16 +1,19 @@
 package com.team9.sungdaehanmarket.controller;
 
+import com.team9.sungdaehanmarket.dto.ItemDetailResponse;
 import com.team9.sungdaehanmarket.dto.ItemResponseDto;
 import com.team9.sungdaehanmarket.dto.ApiResponse;
 import com.team9.sungdaehanmarket.dto.LikeItemRequest;
 import com.team9.sungdaehanmarket.service.ItemService;
 import com.team9.sungdaehanmarket.security.JwtTokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,7 +21,9 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
-    private final ItemService itemService;
+    @Autowired
+    private ItemService itemService;
+
     private final JwtTokenProvider jwtTokenProvider;
 
     public ItemController(ItemService itemService, JwtTokenProvider jwtTokenProvider) {
@@ -133,5 +138,37 @@ public class ItemController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(500, "Failed to like/unlike item", null));
         }
+    }
+
+    @GetMapping("/detail/{itemIdx}")
+    public ResponseEntity<ApiResponse<ItemDetailResponse.Content>> getItemDetail(
+            @PathVariable("itemIdx") Long itemIdx,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        // Bearer 접두사 제거 및 JWT 토큰 추출
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
+
+        // JWT 토큰 유효성 검사
+        if (!jwtTokenProvider.validateToken(token)) {
+            ApiResponse<ItemDetailResponse.Content> response = new ApiResponse<>(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid JWT token",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        // 사용자 ID 추출
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        Long userId = Long.parseLong(authentication.getName());
+
+        // 서비스 호출하여 아이템 세부 정보 가져오기
+        ItemDetailResponse response = itemService.getItemDetail(itemIdx, userId);
+
+        // 상태 코드와 응답 메시지 설정
+        return new ResponseEntity<>(
+                new ApiResponse<>(response.getStatus(), response.getMessage(), response.getContent()),
+                HttpStatus.valueOf(response.getStatus())
+        );
     }
 }
