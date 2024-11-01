@@ -5,12 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8dfa5bda-8934-4c48-91f1-39ecd31b4e25" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/dto/ItemDetailResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/entity/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/repository/UserRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/controller/ItemController.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/controller/ItemController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/service/ItemService.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/service/ItemService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/repository/ItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/repository/ItemRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ItemService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,7 +150,7 @@
       <option name="presentableId" value="Default" />
       <updated>1730190039072</updated>
       <workItem from="1730190040147" duration="940000" />
-      <workItem from="1730461260462" duration="12236000" />
+      <workItem from="1730461260462" duration="14261000" />
     </task>
     <servers />
   </component>
