@@ -2,6 +2,7 @@ package com.team9.sungdaehanmarket.controller;
 
 import com.team9.sungdaehanmarket.dto.ItemResponseDto;
 import com.team9.sungdaehanmarket.dto.ApiResponse;
+import com.team9.sungdaehanmarket.dto.LikeItemRequest;
 import com.team9.sungdaehanmarket.service.ItemService;
 import com.team9.sungdaehanmarket.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
@@ -96,6 +97,41 @@ public class ItemController {
                     null
             );
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @PostMapping("/likes")
+    public ResponseEntity<?> likeItem(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody LikeItemRequest request) {
+
+        // Bearer 접두사 제거
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
+
+        // JWT 토큰 유효성 검사
+        if (!jwtTokenProvider.validateToken(token)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid JWT token",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        // 사용자 ID 추출
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        Long userId = Long.parseLong(authentication.getName());
+
+        // 좋아요 상태 변경 시도
+        boolean isLiked = itemService.likeItem(userId, request.getItemIdx());
+
+        // 성공 여부에 따른 응답 반환
+        if (isLiked) {
+            return ResponseEntity.ok(new ApiResponse<>(200, "Item liked/unliked successfully", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "Failed to like/unlike item", null));
         }
     }
 }

@@ -1,16 +1,21 @@
 package com.team9.sungdaehanmarket.service;
 
 import com.team9.sungdaehanmarket.dto.ItemResponseDto;
+import com.team9.sungdaehanmarket.dto.ApiResponse;
 import com.team9.sungdaehanmarket.entity.Item;
+import com.team9.sungdaehanmarket.entity.User;
 import com.team9.sungdaehanmarket.repository.ItemRepository;
 import com.team9.sungdaehanmarket.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,5 +68,33 @@ public class ItemService {
 
         // Item 저장
         itemRepository.save(newItem);
+    }
+
+    @Transactional
+    public boolean likeItem(Long userId, Long itemIdx) {
+        User user = userRepository.findById(userId).orElse(null);
+        Item item = itemRepository.findById(itemIdx).orElse(null);
+
+        if (user != null && item != null) {
+            if (user.getFavoriteItems().contains(itemIdx)) {
+                // 좋아요 취소
+                user.getFavoriteItems().remove(itemIdx);
+                item.setLikes(item.getLikes() - 1);
+                System.out.println("좋아요 취소 - itemIdx: " + itemIdx);
+            } else {
+                // 좋아요 추가
+                user.getFavoriteItems().add(itemIdx);
+                item.setLikes(item.getLikes() + 1);
+                System.out.println("좋아요 추가 - itemIdx: " + itemIdx);
+            }
+
+            // 변경사항을 강제로 DB에 반영
+            userRepository.saveAndFlush(user); // 변경사항 즉시 반영
+            itemRepository.saveAndFlush(item); // 변경사항 즉시 반영
+
+            return true;
+        }
+        System.out.println("User 또는 Item을 찾을 수 없음 - userId: " + userId + ", itemIdx: " + itemIdx);
+        return false;
     }
 }

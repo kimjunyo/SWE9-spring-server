@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -38,7 +40,7 @@ public class User {
     private List<Long> saleHistory;  // 판매 내역 (Item ID 리스트)
 
     @ElementCollection
-    private List<Long> favoriteItems;  // 관심 물품 목록 (Item ID 리스트)
+    private Set<Long> favoriteItems = new HashSet<>();  // 관심 물품 목록 (Item ID Set)
 
     @ElementCollection
     private List<Long> myItems;  // 내 상품 목록 (Item ID 리스트)
