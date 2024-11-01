@@ -45,9 +45,21 @@ public class User {
     @ElementCollection
     private List<Long> myItems;  // 내 상품 목록 (Item ID 리스트)
 
-    private String profileImage;  // 프로필 이미지 (S3 URL)
+    private String profileImage; // 프로필 이미지
 
     private String major;  // 학과
 
     private Float rating;  // 평점
+
+    // 기본값을 설정하는 생성자 추가
+    public User(String username, String password, String name, String email, Boolean isSchoolVerified, String major) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.isSchoolVerified = isSchoolVerified;
+        this.major = major;
+        this.profileImage = "https://swe9-image.s3.ap-northeast-2.amazonaws.com/1344.jpg";
+        this.rating = 3.0f;  // 기본 평점은 3.0
+    }
 }
