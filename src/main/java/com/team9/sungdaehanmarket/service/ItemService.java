@@ -3,6 +3,7 @@ package com.team9.sungdaehanmarket.service;
 import com.team9.sungdaehanmarket.dto.ItemDetailResponse;
 import com.team9.sungdaehanmarket.dto.ItemResponseDto;
 import com.team9.sungdaehanmarket.dto.ApiResponse;
+import com.team9.sungdaehanmarket.dto.PurchasedItemDetailDto;
 import com.team9.sungdaehanmarket.entity.Item;
 import com.team9.sungdaehanmarket.entity.User;
 import com.team9.sungdaehanmarket.repository.ItemRepository;
@@ -17,8 +18,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.HashMap;
 
 @Service
 public class ItemService {
@@ -67,6 +70,7 @@ public class ItemService {
         newItem.setCategory(Item.Category.valueOf(category));
         newItem.setDescription(description);
         newItem.setUploadedAt(LocalDate.now());
+        newItem.setIsSold(false);
 
         // Item 저장
         itemRepository.save(newItem);
@@ -127,5 +131,91 @@ public class ItemService {
 
         // ItemDetailResponse 생성 후 반환
         return new ItemDetailResponse(HttpStatus.OK.value(), "Item detail retrieved successfully", content);
+    }
+
+    public List<ItemResponseDto> getLikedItems(Long userId) {
+        List<Long> likedItemIds = userRepository.findFavoriteItemsByIdx(userId);
+
+        return itemRepository.findAllById(likedItemIds).stream().map(item -> {
+            ItemResponseDto dto = new ItemResponseDto();
+            dto.setItemIdx(item.getIdx());
+            dto.setTitle(item.getTitle());
+            dto.setItemImage(item.getPhotos().isEmpty() ? null : item.getPhotos().get(0));
+            dto.setDescription(item.getDescription());
+            dto.setPrice(item.getPrice());
+            dto.setIsFavorite(true);
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    public List<ItemResponseDto> getSellingItems(Long sellerId){
+        List<Item> unsoldItems = itemRepository.findBySellerIdAndIsSold(sellerId, false);
+
+        return unsoldItems.stream().map(item -> {
+            ItemResponseDto dto = new ItemResponseDto();
+            dto.setItemIdx(item.getIdx());
+            dto.setTitle(item.getTitle());
+            dto.setItemImage(item.getPhotos().isEmpty() ? null : item.getPhotos().get(0));
+            dto.setDescription(item.getDescription());
+            dto.setPrice(item.getPrice());
+            dto.setIsFavorite(userRepository.findFavoriteItemsByIdx(sellerId).contains(item.getIdx()));
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    public List<ItemResponseDto> getBuyingItems(Long userId){
+        List<Item> purchasedItems = itemRepository.findByBuyerIdAndIsSold(userId, true);
+
+        return purchasedItems.stream().map(item -> {
+            ItemResponseDto dto = new ItemResponseDto();
+            dto.setItemIdx(item.getIdx());
+            dto.setTitle(item.getTitle());
+            dto.setItemImage(item.getPhotos().isEmpty() ? null : item.getPhotos().get(0));
+            dto.setDescription(item.getDescription());
+            dto.setPrice(item.getPrice());
+            dto.setIsFavorite(userRepository.findFavoriteItemsByIdx(userId).contains(item.getIdx()));
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    public PurchasedItemDetailDto getItemRatingInfo(Long userId, Long itemIdx) {
+        Item item = itemRepository.findByBuyerIdAndIsSold(userId, true).stream()
+                .filter(i -> i.getIdx().equals(itemIdx))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Item not found or not purchased by user"));
+
+        User seller = userRepository.findById(item.getSellerId())
+                .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
+
+        PurchasedItemDetailDto dto = new PurchasedItemDetailDto();
+        dto.setItemIdx(item.getIdx());
+        dto.setTitle(item.getTitle());
+        dto.setItemImage(item.getPhotos().isEmpty() ? null : item.getPhotos().get(0));
+        dto.setDescription(item.getDescription());
+        dto.setPrice(item.getPrice());
+        dto.setTransactionDate(item.getTransactionDate() != null ? item.getTransactionDate().toString() : null);
+        dto.setSellerName(seller.getName());
+        dto.setSellerMajor(seller.getMajor());
+
+        return dto;
+    }
+
+    public void saveRating(Long itemIdx, Long userId, float rating) {
+        // 아이템이 거래 완료 상태인지 확인하고 판매자 ID 가져오기
+        Item item = itemRepository.findById(itemIdx)
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+
+        if (!item.getSellerId().equals(userId)) {
+            throw new IllegalArgumentException("Only the buyer can rate the seller.");
+        }
+
+        User seller = userRepository.findById(item.getSellerId())
+                .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
+
+        seller.setRatingSum(seller.getRatingSum() + rating);
+        seller.setRatingCount(seller.getRatingCount() + 1);
+        seller.setRating(seller.getRatingSum() / seller.getRatingCount());
+
+        userRepository.save(seller);
     }
 }

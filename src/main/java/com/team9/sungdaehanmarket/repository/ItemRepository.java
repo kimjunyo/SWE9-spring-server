@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
@@ -19,4 +20,13 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findByIsSold(boolean isSold);
 
     List<Item> findBySellerId(Long sellerId);
+
+    List<Item> findBySellerIdAndIsSold(Long sellerId, boolean isSold);
+
+    List<Item> findByBuyerIdAndIsSold(Long buyerId, boolean isSold);
+
+    List<Item> findByBuyerId(Long buyerId);
+
+    Optional<Item> findByIdxAndSellerId(Long itemIdx, Long sellerId);
+
 }

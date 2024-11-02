@@ -1,6 +1,7 @@
 package com.team9.sungdaehanmarket.controller;
 
 import com.team9.sungdaehanmarket.dto.ApiResponse;
+import com.team9.sungdaehanmarket.dto.ItemResponseDto;
 import com.team9.sungdaehanmarket.entity.User;
 import com.team9.sungdaehanmarket.repository.UserRepository;
 import com.team9.sungdaehanmarket.security.JwtTokenProvider;
@@ -14,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
