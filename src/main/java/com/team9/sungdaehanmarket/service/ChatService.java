@@ -111,4 +111,14 @@ public class ChatService {
             return false;
         }
     }
+
+    public Boolean deleteChatRoom(Long chatRoomId) {
+        if (chatRoomRepository.findById(chatRoomId).isPresent()) {
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).get();
+            chatRoomRepository.delete(chatRoom);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

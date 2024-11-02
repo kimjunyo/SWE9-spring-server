@@ -93,7 +93,7 @@ public class ChatController {
             );
             return ResponseEntity.ok().body(response);
         } else {
-            return ResponseEntity.notFound().eTag("chatrooms does not exist").build();
+            return ResponseEntity.notFound().eTag("A chatroom does not exist").build();
         }
     }
 
@@ -121,7 +121,32 @@ public class ChatController {
             );
             return ResponseEntity.ok().body(response);
         } else {
-            return ResponseEntity.notFound().eTag("chatrooms does not exist").build();
+            return ResponseEntity.notFound().eTag("A chatroom does not exist").build();
+        }
+    }
+
+    @DeleteMapping("/{chatroomid}")
+    private ResponseEntity<?> deleteChatRoom(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid) {
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid JWT token",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        if (chatService.deleteChatRoom(chatroomid)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "A chat room is deleted successfully",
+                    null
+            );
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.notFound().eTag("A chatroom does not exist").build();
         }
     }
 }
