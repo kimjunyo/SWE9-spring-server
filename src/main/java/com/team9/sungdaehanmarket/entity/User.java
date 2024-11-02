@@ -49,6 +49,8 @@ public class User {
 
     private String major;  // 학과
 
+    private int ratingCount = 0;
+    private Float ratingSum = 0.0f;
     private Float rating;  // 평점
 
     // 기본값을 설정하는 생성자 추가
