@@ -3,6 +3,7 @@ package com.team9.sungdaehanmarket.service;
 import com.team9.sungdaehanmarket.dto.ChatRoomDetailDto;
 import com.team9.sungdaehanmarket.dto.ChatRoomsResponseDto;
 import com.team9.sungdaehanmarket.dto.MessageDto;
+import com.team9.sungdaehanmarket.dto.MessageResponseDto;
 import com.team9.sungdaehanmarket.entity.ChatRoom;
 import com.team9.sungdaehanmarket.entity.Item;
 import com.team9.sungdaehanmarket.entity.Message;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -151,6 +153,34 @@ public class ChatService {
                     .profileImage(profileImage)
                     .name(name)
                     .build()).orElse(null);
+
+        } else {
+            return null;
+        }
+    }
+
+    public List<MessageResponseDto> getMessages(Long chatRoomId, Long userId) {
+        if (chatRoomRepository.findById(chatRoomId).isPresent()) {
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).get();
+            List<MessageResponseDto> messageList = new ArrayList<>();
+
+            List<Message> allByChatRoom = messageRepository.findAllByChatRoom(chatRoom);
+            for (Message message : allByChatRoom) {
+                if (Objects.equals(message.getSenderId(), userId)) {
+                    messageList.add(MessageResponseDto.builder()
+                            .isPhoto(message.getIsSellerMessage())
+                            .isSender(true)
+                            .data(message.getContent())
+                            .build());
+                } else {
+                    messageList.add(MessageResponseDto.builder()
+                            .isPhoto(message.getIsSellerMessage())
+                            .isSender(false)
+                            .data(message.getContent())
+                            .build());
+                }
+            }
+            return messageList;
 
         } else {
             return null;

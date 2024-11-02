@@ -3,6 +3,7 @@ package com.team9.sungdaehanmarket.controller;
 import com.team9.sungdaehanmarket.dto.ApiResponse;
 import com.team9.sungdaehanmarket.dto.ChatRoomDetailDto;
 import com.team9.sungdaehanmarket.dto.ChatRoomsResponseDto;
+import com.team9.sungdaehanmarket.dto.MessageResponseDto;
 import com.team9.sungdaehanmarket.security.JwtTokenProvider;
 import com.team9.sungdaehanmarket.service.ChatService;
 import com.team9.sungdaehanmarket.service.S3Service;
@@ -175,6 +176,35 @@ public class ChatController {
                     HttpStatus.OK.value(),
                     "Get chat room detail successfully",
                     chatRoomDetail
+            );
+            return ResponseEntity.ok().body(response);
+        }
+    }
+
+    @GetMapping("/{chatroomid}")
+    public ResponseEntity<?> getMessages(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid) {
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid JWT token",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        Long userId = Long.parseLong(authentication.getName());
+
+        List<MessageResponseDto> messages = chatService.getMessages(chatroomid, userId);
+        if (messages == null) {
+            return ResponseEntity.notFound().eTag("A chatroom does not exist").build();
+        } else {
+            ApiResponse<List<MessageResponseDto>> response = new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "Get chat room detail successfully",
+                    messages
             );
             return ResponseEntity.ok().body(response);
         }
