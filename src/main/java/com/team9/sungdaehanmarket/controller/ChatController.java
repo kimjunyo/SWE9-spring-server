@@ -1,6 +1,7 @@
 package com.team9.sungdaehanmarket.controller;
 
 import com.team9.sungdaehanmarket.dto.ApiResponse;
+import com.team9.sungdaehanmarket.dto.ChatRoomDetailDto;
 import com.team9.sungdaehanmarket.dto.ChatRoomsResponseDto;
 import com.team9.sungdaehanmarket.security.JwtTokenProvider;
 import com.team9.sungdaehanmarket.service.ChatService;
@@ -53,12 +54,12 @@ public class ChatController {
 
     // 필요할 거 같은데..
     @PostMapping
-    private ResponseEntity<?> createChatRoom(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<?> createChatRoom(@RequestHeader("Authorization") String authorizationHeader) {
         return null;
     }
 
     @PostMapping("/{chatroomid}/image")
-    private ResponseEntity<?> sendAnImage(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid, @RequestBody MultipartFile image) {
+    public ResponseEntity<?> sendAnImage(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid, @RequestBody MultipartFile image) {
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
 
         if (!jwtTokenProvider.validateToken(token)) {
@@ -98,7 +99,7 @@ public class ChatController {
     }
 
     @PostMapping("/{chatroomid}/text")
-    private ResponseEntity<?> sendAText(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid, @RequestBody String text) {
+    public ResponseEntity<?> sendAText(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid, @RequestBody String text) {
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
 
         if (!jwtTokenProvider.validateToken(token)) {
@@ -126,7 +127,7 @@ public class ChatController {
     }
 
     @DeleteMapping("/{chatroomid}")
-    private ResponseEntity<?> deleteChatRoom(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid) {
+    public ResponseEntity<?> deleteChatRoom(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid) {
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
 
         if (!jwtTokenProvider.validateToken(token)) {
@@ -147,6 +148,35 @@ public class ChatController {
             return ResponseEntity.ok().body(response);
         } else {
             return ResponseEntity.notFound().eTag("A chatroom does not exist").build();
+        }
+    }
+
+    @GetMapping("/{chatroomid}/detail")
+    public ResponseEntity<?> getChatRoomDetails(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid) {
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid JWT token",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        Long userId = Long.parseLong(authentication.getName());
+
+        ChatRoomDetailDto chatRoomDetail = chatService.getChatRoomDetail(chatroomid, userId);
+        if (chatRoomDetail == null) {
+            return ResponseEntity.notFound().eTag("A chatroom does not exist or an item does not exist").build();
+        } else {
+            ApiResponse<ChatRoomDetailDto> response = new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "Get chat room detail successfully",
+                    chatRoomDetail
+            );
+            return ResponseEntity.ok().body(response);
         }
     }
 }

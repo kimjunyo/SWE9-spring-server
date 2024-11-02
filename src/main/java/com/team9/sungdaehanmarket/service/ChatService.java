@@ -1,16 +1,18 @@
 package com.team9.sungdaehanmarket.service;
 
+import com.team9.sungdaehanmarket.dto.ChatRoomDetailDto;
 import com.team9.sungdaehanmarket.dto.ChatRoomsResponseDto;
 import com.team9.sungdaehanmarket.dto.MessageDto;
 import com.team9.sungdaehanmarket.entity.ChatRoom;
+import com.team9.sungdaehanmarket.entity.Item;
 import com.team9.sungdaehanmarket.entity.Message;
 import com.team9.sungdaehanmarket.repository.ChatRoomRepository;
+import com.team9.sungdaehanmarket.repository.ItemRepository;
 import com.team9.sungdaehanmarket.repository.MessageRepository;
 import com.team9.sungdaehanmarket.repository.UserRepository;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
+    private final ItemRepository itemRepository;
 
     public List<ChatRoomsResponseDto> getChatRooms(Long userId) {
         List<ChatRoomsResponseDto> chatRoomsList = new ArrayList<>();
@@ -119,6 +122,38 @@ public class ChatService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public ChatRoomDetailDto getChatRoomDetail(Long chatRoomId, Long userId) {
+        if (chatRoomRepository.findById(chatRoomId).isPresent()) {
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).get();
+            Long opponentId;
+            if (chatRoom.getUser1Id().equals(userId)) {
+                opponentId = chatRoom.getUser2Id();
+            } else {
+                opponentId = chatRoom.getUser1Id();
+            }
+
+            Tuple userProfileById = userRepository.findUserProfileById(opponentId).get();
+
+            String profileImage = userProfileById.get("profileImage", String.class);
+            String name = userProfileById.get("name", String.class);
+            String rating = userProfileById.get("rating", String.class);
+
+            Optional<Item> byId = itemRepository.findById(chatRoom.getItemId());
+
+            return byId.map(item -> ChatRoomDetailDto.builder()
+                    .title(item.getTitle())
+                    .price(item.getPrice().intValue())
+                    .rating(Float.parseFloat(rating))
+                    .itemImage(item.getPhotos().get(0))
+                    .profileImage(profileImage)
+                    .name(name)
+                    .build()).orElse(null);
+
+        } else {
+            return null;
         }
     }
 }
