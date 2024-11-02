@@ -2,15 +2,17 @@ package com.team9.sungdaehanmarket.controller;
 
 import com.team9.sungdaehanmarket.dto.ApiResponse;
 import com.team9.sungdaehanmarket.dto.ChatRoomsResponseDto;
-import com.team9.sungdaehanmarket.entity.ChatRoom;
 import com.team9.sungdaehanmarket.security.JwtTokenProvider;
 import com.team9.sungdaehanmarket.service.ChatService;
+import com.team9.sungdaehanmarket.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,6 +21,7 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
+    private final S3Service s3Service;
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping
@@ -50,7 +53,75 @@ public class ChatController {
 
     // 필요할 거 같은데..
     @PostMapping
-    private ResponseEntity<?> createChatRoom(ChatRoom chatRoom) {
+    private ResponseEntity<?> createChatRoom(@RequestHeader("Authorization") String authorizationHeader) {
         return null;
+    }
+
+    @PostMapping("/{chatroomid}/image")
+    private ResponseEntity<?> sendAnImage(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid, @RequestBody MultipartFile image) {
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid JWT token",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        Long userId = Long.parseLong(authentication.getName());
+
+        String profileImageUrl = "";
+        try {
+            profileImageUrl = s3Service.uploadFile(image);
+        } catch (IOException e) {
+            ApiResponse<String> errorResponse = new ApiResponse<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "Error uploading profile image",
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+
+        if (chatService.storeMessageImage(userId, chatroomid, profileImageUrl)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "An image message is saved successfully",
+                    null
+            );
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.notFound().eTag("chatrooms does not exist").build();
+        }
+    }
+
+    @PostMapping("/{chatroomid}/text")
+    private ResponseEntity<?> sendAText(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid, @RequestBody String text) {
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid JWT token",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        Long userId = Long.parseLong(authentication.getName());
+
+        if (chatService.storeMessageImage(userId, chatroomid, text)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "An text message is saved successfully",
+                    null
+            );
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.notFound().eTag("chatrooms does not exist").build();
+        }
     }
 }

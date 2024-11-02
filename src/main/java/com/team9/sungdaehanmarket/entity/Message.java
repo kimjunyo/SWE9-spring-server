@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,4 +31,13 @@ public class Message {
     private LocalDateTime sentAt = LocalDateTime.now();  // 메시지 전송 시간
 
     private Boolean isRead = false;  // 메시지 읽음 여부
+
+    public Message(ChatRoom chatRoom, Long senderId, Boolean isSellerMessage, String content, LocalDateTime sentAt, Boolean isRead) {
+        this.chatRoom = chatRoom;
+        this.senderId = senderId;
+        this.isSellerMessage = isSellerMessage;
+        this.content = content;
+        this.sentAt = sentAt;
+        this.isRead = isRead;
+    }
 }

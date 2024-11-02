@@ -3,13 +3,16 @@ package com.team9.sungdaehanmarket.service;
 import com.team9.sungdaehanmarket.dto.ChatRoomsResponseDto;
 import com.team9.sungdaehanmarket.dto.MessageDto;
 import com.team9.sungdaehanmarket.entity.ChatRoom;
+import com.team9.sungdaehanmarket.entity.Message;
 import com.team9.sungdaehanmarket.repository.ChatRoomRepository;
 import com.team9.sungdaehanmarket.repository.MessageRepository;
 import com.team9.sungdaehanmarket.repository.UserRepository;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,5 +90,25 @@ public class ChatService {
         }
 
         return chatRoomsList;
+    }
+
+    public Boolean storeMessageImage(Long chatRoomId, Long userId, String imageUrl) {
+        if (chatRoomRepository.findById(chatRoomId).isPresent()) {
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).get();
+            messageRepository.save(new Message(chatRoom, userId, false, imageUrl, LocalDateTime.now(), false));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Boolean storeMessageText(Long chatRoomId, Long userId, String text) {
+        if (chatRoomRepository.findById(chatRoomId).isPresent()) {
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).get();
+            messageRepository.save(new Message(chatRoom, userId, true, text, LocalDateTime.now(), false));
+            return true;
+        } else {
+            return false;
+        }
     }
 }
