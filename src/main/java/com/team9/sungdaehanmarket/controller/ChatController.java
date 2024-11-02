@@ -113,7 +113,7 @@ public class ChatController {
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
         Long userId = Long.parseLong(authentication.getName());
 
-        if (chatService.storeMessageImage(userId, chatroomid, text)) {
+        if (chatService.storeMessageText(userId, chatroomid, text)) {
             ApiResponse<String> response = new ApiResponse<>(
                     HttpStatus.OK.value(),
                     "An text message is saved successfully",

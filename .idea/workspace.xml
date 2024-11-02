@@ -5,15 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8dfa5bda-8934-4c48-91f1-39ecd31b4e25" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ChatController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/dto/ChatRoomsResponseDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/dto/MessageDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/repository/ChatRoomRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/repository/MessageRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ChatService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/resources/dev.env" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/dto/ApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/dto/ApiResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/entity/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/entity/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ChatService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
