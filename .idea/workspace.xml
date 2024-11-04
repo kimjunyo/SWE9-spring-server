@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8dfa5bda-8934-4c48-91f1-39ecd31b4e25" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ChatService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,7 +156,7 @@
       <workItem from="1730461260462" duration="14261000" />
       <workItem from="1730561796459" duration="653000" />
       <workItem from="1730562465865" duration="117000" />
-      <workItem from="1730717359950" duration="1964000" />
+      <workItem from="1730717359950" duration="5471000" />
     </task>
     <servers />
   </component>

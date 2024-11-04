@@ -55,8 +55,31 @@ public class ChatController {
 
     // 필요할 거 같은데..
     @PostMapping
-    public ResponseEntity<?> createChatRoom(@RequestHeader("Authorization") String authorizationHeader) {
-        return null;
+    public ResponseEntity<?> createChatRoom(@RequestHeader("Authorization") String authorizationHeader, @RequestBody Long itemId, @RequestBody String username) {
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid JWT token",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        Long userId = Long.parseLong(authentication.getName());
+
+        if (chatService.createChatRoom(userId, username, itemId)) {
+            ApiResponse<String> response = new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "A chatroom is saved successfully",
+                    null
+            );
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.notFound().eTag("An user is not found or unexpected error").build();
+        }
     }
 
     @PostMapping("/{chatroomid}/image")
@@ -75,7 +98,7 @@ public class ChatController {
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
         Long userId = Long.parseLong(authentication.getName());
 
-        String profileImageUrl = "";
+        String profileImageUrl;
         try {
             profileImageUrl = s3Service.uploadFile(image);
         } catch (IOException e) {
