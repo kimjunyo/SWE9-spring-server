@@ -36,11 +36,11 @@ public class ChatService {
         List<ChatRoom> user1IdList = chatRoomRepository.findAllByUser1IdAndUser2IdNotContaining(userId, userId);
 
         for (ChatRoom chatRoom : user1IdList) {
-            Tuple userProfileById = userRepository.findUserProfileById(chatRoom.getUser2Id()).get();
+            User userProfileById = userRepository.findById(chatRoom.getUser2Id()).get();
 
-            String profileImage = userProfileById.get("profileImage", String.class);
-            String username = userProfileById.get("username", String.class);
-            String major = userProfileById.get("major", String.class);
+            String profileImage = userProfileById.getProfileImage();
+            String username = userProfileById.getUsername();
+            String major = userProfileById.getMajor();
 
             Optional<MessageDto> latestMessage = messageRepository.findLatestMessageContentAndSentAtByChatRoomId(chatRoom.getIdx());
             if (latestMessage.isPresent()) {
@@ -119,7 +119,7 @@ public class ChatService {
 
     }
 
-    public Boolean storeMessageImage(Long chatRoomId, Long userId, String imageUrl) {
+    public Boolean storeMessageImage(Long userId, Long chatRoomId, String imageUrl) {
         if (chatRoomRepository.findById(chatRoomId).isPresent()) {
             ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).get();
             messageRepository.save(new Message(chatRoom, userId, false, imageUrl, LocalDateTime.now(), false));

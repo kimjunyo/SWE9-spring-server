@@ -3,6 +3,7 @@ package com.team9.sungdaehanmarket.dto;
 import lombok.*;
 
 @Builder
+@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
