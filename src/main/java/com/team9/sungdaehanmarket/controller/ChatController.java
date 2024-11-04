@@ -23,7 +23,7 @@ public class ChatController {
     private final S3Service s3Service;
     private final JwtTokenProvider jwtTokenProvider;
 
-    // 더미데이터 추가 완료
+    // 테스트 완료
     @GetMapping
     public ResponseEntity<?> getChatRoomList(@RequestHeader("Authorization") String authorizationHeader) {
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
@@ -121,9 +121,9 @@ public class ChatController {
         }
     }
 
-    //TODO
+    //더미데이터 추가 완료
     @PostMapping("/{chatroomid}/text")
-    public ResponseEntity<?> sendAText(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid, @RequestBody String text) {
+    public ResponseEntity<?> sendAText(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("chatroomid") Long chatroomid, @RequestBody String text) {
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
 
         if (!jwtTokenProvider.validateToken(token)) {
@@ -150,8 +150,9 @@ public class ChatController {
         }
     }
 
+    //테스트 완료
     @DeleteMapping("/{chatroomid}")
-    public ResponseEntity<?> deleteChatRoom(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid) {
+    public ResponseEntity<?> deleteChatRoom(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("chatroomid") Long chatroomid) {
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
 
         if (!jwtTokenProvider.validateToken(token)) {
@@ -175,8 +176,9 @@ public class ChatController {
         }
     }
 
+    //테스트 완료
     @GetMapping("/{chatroomid}/detail")
-    public ResponseEntity<?> getChatRoomDetails(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid) {
+    public ResponseEntity<?> getChatRoomDetails(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("chatroomid") Long chatroomid) {
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
 
         if (!jwtTokenProvider.validateToken(token)) {
@@ -204,8 +206,9 @@ public class ChatController {
         }
     }
 
+    //테스트 완료
     @GetMapping("/{chatroomid}")
-    public ResponseEntity<?> getMessages(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long chatroomid) {
+    public ResponseEntity<?> getMessages(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("chatroomid") Long chatroomid) {
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
 
         if (!jwtTokenProvider.validateToken(token)) {

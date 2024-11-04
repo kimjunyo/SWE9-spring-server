@@ -129,7 +129,7 @@ public class ChatService {
         }
     }
 
-    public Boolean storeMessageText(Long chatRoomId, Long userId, String text) {
+    public Boolean storeMessageText(Long userId, Long chatRoomId, String text) {
         if (chatRoomRepository.findById(chatRoomId).isPresent()) {
             ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).get();
             messageRepository.save(new Message(chatRoom, userId, true, text, LocalDateTime.now(), false));
@@ -163,14 +163,14 @@ public class ChatService {
 
             String profileImage = userProfileById.get("profileImage", String.class);
             String name = userProfileById.get("name", String.class);
-            String rating = userProfileById.get("rating", String.class);
+            Float rating = userProfileById.get("rating", Float.class);
 
             Optional<Item> byId = itemRepository.findById(chatRoom.getItemId());
 
             return byId.map(item -> ChatRoomDetailDto.builder()
                     .title(item.getTitle())
                     .price(item.getPrice().intValue())
-                    .rating(Float.parseFloat(rating))
+                    .rating(rating)
                     .itemImage(item.getPhotos().get(0))
                     .profileImage(profileImage)
                     .name(name)
