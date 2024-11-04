@@ -7,6 +7,7 @@ import com.team9.sungdaehanmarket.dto.MessageResponseDto;
 import com.team9.sungdaehanmarket.entity.ChatRoom;
 import com.team9.sungdaehanmarket.entity.Item;
 import com.team9.sungdaehanmarket.entity.Message;
+import com.team9.sungdaehanmarket.entity.User;
 import com.team9.sungdaehanmarket.repository.ChatRoomRepository;
 import com.team9.sungdaehanmarket.repository.ItemRepository;
 import com.team9.sungdaehanmarket.repository.MessageRepository;
@@ -38,7 +39,7 @@ public class ChatService {
             Tuple userProfileById = userRepository.findUserProfileById(chatRoom.getUser2Id()).get();
 
             String profileImage = userProfileById.get("profileImage", String.class);
-            String name = userProfileById.get("name", String.class);
+            String username = userProfileById.get("username", String.class);
             String major = userProfileById.get("major", String.class);
 
             Optional<MessageDto> latestMessage = messageRepository.findLatestMessageContentAndSentAtByChatRoomId(chatRoom.getIdx());
@@ -46,7 +47,7 @@ public class ChatService {
                 ChatRoomsResponseDto dto = ChatRoomsResponseDto.builder()
                         .chatroomIdx(chatRoom.getIdx())
                         .major(major)
-                        .id(name)
+                        .id(username)
                         .profileImage(profileImage)
                         .lastMessageTime(latestMessage.get().getSentAt().toString())
                         .lastMessage(latestMessage.get().getContent())
@@ -56,7 +57,7 @@ public class ChatService {
                 ChatRoomsResponseDto dto = ChatRoomsResponseDto.builder()
                         .chatroomIdx(chatRoom.getIdx())
                         .major(major)
-                        .id(name)
+                        .id(username)
                         .profileImage(profileImage)
                         .build();
                 chatRoomsList.add(dto);
@@ -69,7 +70,7 @@ public class ChatService {
             Tuple userProfileById = userRepository.findUserProfileById(chatRoom.getUser1Id()).get();
 
             String profileImage = userProfileById.get("profileImage", String.class);
-            String name = userProfileById.get("name", String.class);
+            String username = userProfileById.get("username", String.class);
             String major = userProfileById.get("major", String.class);
 
             Optional<MessageDto> latestMessage = messageRepository.findLatestMessageContentAndSentAtByChatRoomId(chatRoom.getIdx());
@@ -77,7 +78,7 @@ public class ChatService {
                 ChatRoomsResponseDto dto = ChatRoomsResponseDto.builder()
                         .chatroomIdx(chatRoom.getIdx())
                         .major(major)
-                        .id(name)
+                        .id(username)
                         .profileImage(profileImage)
                         .lastMessageTime(latestMessage.get().getSentAt().toString())
                         .lastMessage(latestMessage.get().getContent())
@@ -87,7 +88,7 @@ public class ChatService {
                 ChatRoomsResponseDto dto = ChatRoomsResponseDto.builder()
                         .chatroomIdx(chatRoom.getIdx())
                         .major(major)
-                        .id(name)
+                        .id(username)
                         .profileImage(profileImage)
                         .build();
                 chatRoomsList.add(dto);
@@ -95,6 +96,27 @@ public class ChatService {
         }
 
         return chatRoomsList;
+    }
+
+    public Boolean createChatRoom(Long user1Id, String username, Long itemId) {
+        Optional<User> byUsername = userRepository.findByUsername(username);
+
+        if (byUsername.isPresent()) {
+            try {
+                ChatRoom chatRoom = new ChatRoom();
+                chatRoom.setItemId(itemId);
+                chatRoom.setUser1Id(user1Id);
+                chatRoom.setUser2Id(byUsername.get().getIdx());
+                chatRoomRepository.save(chatRoom);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+
     }
 
     public Boolean storeMessageImage(Long chatRoomId, Long userId, String imageUrl) {
