@@ -1,5 +1,10 @@
 package com.team9.sungdaehanmarket.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ApiResponse<T> {
     private int status;
     private String message;
@@ -8,31 +13,6 @@ public class ApiResponse<T> {
     public ApiResponse(int status, String message, T content) {
         this.status = status;
         this.message = message;
-        this.content = content;
-    }
-
-    // Getter 및 Setter
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getContent() {
-        return content;
-    }
-
-    public void setContent(T content) {
         this.content = content;
     }
 }
