@@ -12,4 +12,6 @@ public class ItemResponseDto {
     private String description;
     private Long price;
     private Boolean isFavorite;
+    private String category;
+    private String authorMajor;
 }
