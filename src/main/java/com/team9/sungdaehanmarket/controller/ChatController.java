@@ -68,7 +68,7 @@ public class ChatController {
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
         Long userId = Long.parseLong(authentication.getName());
 
-        if (chatService.createChatRoom(userId, chatRoomCreateRequestDto.username(), chatRoomCreateRequestDto.itemId())) {
+        if (chatService.createChatRoom(userId, chatRoomCreateRequestDto.itemId())) {
             ApiResponse<String> response = new ApiResponse<>(
                     HttpStatus.OK.value(),
                     "A chatroom is saved successfully",

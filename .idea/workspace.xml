@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8dfa5bda-8934-4c48-91f1-39ecd31b4e25" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/controller/ChatController.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/controller/ChatController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/service/ChatService.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/team9/sungdaehanmarket/service/ChatService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/dto/ChatRoomCreateRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/dto/ChatRoomCreateRequestDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ChatService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -61,12 +60,12 @@
     &quot;assignee&quot;: &quot;kimjunyo&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/kimjunyo/SWE9-spring-server.git",
-    "accountId": "bca54298-6be8-4e74-adb9-ad3d63b95b15"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/kimjunyo/SWE9-spring-server.git&quot;,
+    &quot;accountId&quot;: &quot;bca54298-6be8-4e74-adb9-ad3d63b95b15&quot;
   }
-}]]></component>
+}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
@@ -90,7 +89,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.SungdaehanmarketApplication.executor": "Debug",
+    "Spring Boot.SungdaehanmarketApplication.executor": "Run",
     "git-widget-placeholder": "kimjunyo",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
@@ -158,7 +157,12 @@
       <workItem from="1730461260462" duration="14261000" />
       <workItem from="1730561796459" duration="653000" />
       <workItem from="1730562465865" duration="117000" />
-      <workItem from="1730717359950" duration="8929000" />
+      <workItem from="1730717359950" duration="9531000" />
+      <workItem from="1730740589322" duration="1211000" />
+      <workItem from="1730798989210" duration="3000" />
+      <workItem from="1730821235500" duration="45000" />
+      <workItem from="1730821290089" duration="460000" />
+      <workItem from="1730888420275" duration="312000" />
     </task>
     <servers />
   </component>
@@ -198,16 +202,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ItemController.java</url>
           <line>19</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/controller/ChatController.java</url>
-          <line>85</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/team9/sungdaehanmarket/service/ChatService.java</url>
-          <line>122</line>
-          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
