@@ -25,5 +25,6 @@ public class ItemDetailResponse {
         private Long price;
         private Boolean isOfferAccepted;
         private Boolean isFavorite;
+        private String sellerName;
     }
 }

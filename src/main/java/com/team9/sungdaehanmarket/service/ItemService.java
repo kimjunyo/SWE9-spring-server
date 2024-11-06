@@ -39,7 +39,6 @@ public class ItemService {
     public List<ItemResponseDto> getItems(Long userId) {
         List<Item> items = itemRepository.findAll();
 
-        // Item 엔티티를 ItemResponseDto로 변환
         return items.stream().map(item -> {
             ItemResponseDto dto = new ItemResponseDto();
             dto.setItemIdx(item.getIdx());
@@ -48,6 +47,14 @@ public class ItemService {
             dto.setDescription(item.getDescription());
             dto.setPrice(item.getPrice());
             dto.setIsFavorite(userRepository.findFavoriteItemsByIdx(userId).contains(item.getIdx()));
+
+            // Enum과 작성자의 학과 정보 추가
+            dto.setCategory(item.getCategory().name());
+            User seller = userRepository.findById(item.getSellerId()).orElse(null);
+            if (seller != null) {
+                dto.setAuthorMajor(seller.getMajor());
+            }
+
             return dto;
         }).collect(Collectors.toList());
     }
@@ -108,16 +115,15 @@ public class ItemService {
         Optional<Item> itemOpt = itemRepository.findById(itemIdx);
 
         if (itemOpt.isEmpty()) {
-            // 아이템이 없을 경우, 상태 코드와 메시지를 포함한 응답을 반환
             return new ItemDetailResponse(HttpStatus.NOT_FOUND.value(), "Item not found", null);
         }
 
         Item item = itemOpt.get();
+        boolean isFavorite = userRepository.findFavoriteItemsByIdx(userId).contains(item.getIdx());
 
-        // 유저가 해당 아이템을 좋아요했는지 여부 확인 (ItemRepository 메서드 사용)
-        boolean isFavorite = itemRepository.isItemFavoritedByUser(userId, item.getIdx());
+        User seller = userRepository.findById(item.getSellerId()).orElse(null);
+        String sellerName = (seller != null) ? seller.getName() : "Unknown";
 
-        // Item 정보를 기반으로 ItemDetailResponse.Content 생성
         ItemDetailResponse.Content content = new ItemDetailResponse.Content(
                 item.getPhotos(),
                 item.getTitle(),
@@ -126,10 +132,10 @@ public class ItemService {
                 item.getDescription(),
                 item.getPrice(),
                 item.getIsOfferAccepted(),
-                isFavorite
+                isFavorite,
+                sellerName  // 판매자 이름 추가
         );
 
-        // ItemDetailResponse 생성 후 반환
         return new ItemDetailResponse(HttpStatus.OK.value(), "Item detail retrieved successfully", content);
     }
 
