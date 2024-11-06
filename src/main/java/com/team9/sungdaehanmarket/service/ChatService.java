@@ -98,15 +98,19 @@ public class ChatService {
         return chatRoomsList;
     }
 
-    public Boolean createChatRoom(Long user1Id, String username, Long itemId) {
-        Optional<User> byUsername = userRepository.findByUsername(username);
+    public Boolean createChatRoom(Long user1Id, Long itemId) {
+        Optional<Item> byId = itemRepository.findById(itemId);
+        if (byId.isEmpty()) {
+            return false;
+        }
+        Optional<User> byUserId = userRepository.findById(byId.get().getSellerId());
 
-        if (byUsername.isPresent()) {
+        if (byUserId.isPresent()) {
             try {
                 ChatRoom chatRoom = new ChatRoom();
                 chatRoom.setItemId(itemId);
                 chatRoom.setUser1Id(user1Id);
-                chatRoom.setUser2Id(byUsername.get().getIdx());
+                chatRoom.setUser2Id(byUserId.get().getIdx());
                 chatRoomRepository.save(chatRoom);
                 return true;
             } catch (Exception e) {
