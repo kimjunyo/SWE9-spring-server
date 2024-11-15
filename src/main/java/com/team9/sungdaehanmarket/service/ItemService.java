@@ -196,6 +196,7 @@ public class ItemService {
         dto.setTransactionDate(item.getTransactionDate() != null ? item.getTransactionDate().toString() : null);
         dto.setSellerName(seller.getName());
         dto.setSellerMajor(seller.getMajor());
+        dto.setProfileImage(seller.getProfileImage());
 
         return dto;
     }
