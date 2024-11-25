@@ -449,6 +449,50 @@ public class ChatServiceTest {
         assertThat(chatRoomDetail2.getName()).isEqualTo("test");
     }
 
+    @Test
+    @DisplayName(value = "채팅방 정보 가져오기 실패 test")
+    @Transactional
+    public void getChatRoomDetailsFailTest() {
+        //Given
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+        buyer.setRating(1.0f);
+
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+
+        userRepository.save(buyer);
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setSellerId(seller.getIdx());
+        item.setTitle("test.title");
+        item.setPrice(1000L);
+        item.setPhotos(List.of("서적"));
+
+        itemRepository.save(item);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setUser1Id(buyer.getIdx());
+        chatRoom.setUser2Id(seller.getIdx());
+        chatRoom.setItemId(item.getIdx());
+        chatRoom.setCreatedAt(LocalDateTime.now());
+
+        chatroomRepository.save(chatRoom);
+        //When
+        ChatRoomDetailDto chatRoomDetail = chatService.getChatRoomDetail(200L, buyer.getIdx());
+        //Then
+        assertThat(chatRoomDetail).isNull();
+    }
 
 
 }
