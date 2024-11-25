@@ -319,5 +319,87 @@ public class ChatServiceTest {
         assertThat(b).isFalse();
     }
 
+    @Test
+    @DisplayName(value = "채팅방 삭제 성공 test")
+    @Transactional
+    public void deleteChatRoomSuccessTest() {
+        //Given
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+
+        userRepository.save(buyer);
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setSellerId(seller.getIdx());
+        item.setTitle("test.title");
+        item.setPrice(1000L);
+
+        itemRepository.save(item);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setUser1Id(buyer.getIdx());
+        chatRoom.setUser2Id(seller.getIdx());
+        chatRoom.setItemId(item.getIdx());
+        chatRoom.setCreatedAt(LocalDateTime.now());
+
+        chatroomRepository.save(chatRoom);
+        //When
+        Boolean b = chatService.deleteChatRoom(chatRoom.getIdx());
+        //Then
+        assertThat(b).isTrue();
+    }
+
+    @Test
+    @DisplayName(value = "채팅방 삭제 채팅방 존재하지 않아 실패 test")
+    @Transactional
+    public void deleteChatRoomFailTest() {
+        //Given
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+
+        userRepository.save(buyer);
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setSellerId(seller.getIdx());
+        item.setTitle("test.title");
+        item.setPrice(1000L);
+
+        itemRepository.save(item);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setUser1Id(buyer.getIdx());
+        chatRoom.setUser2Id(seller.getIdx());
+        chatRoom.setItemId(item.getIdx());
+        chatRoom.setCreatedAt(LocalDateTime.now());
+
+        chatroomRepository.save(chatRoom);
+        //When
+        Boolean b = chatService.deleteChatRoom(200L);
+        //Then
+        assertThat(b).isFalse();
+    }
+
 
 }
