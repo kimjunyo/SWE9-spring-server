@@ -14,4 +14,5 @@ public class PurchasedItemDetailDto {
     private String transactionDate;
     private String sellerName;
     private String sellerMajor;
+    private String profileImage;
 }
