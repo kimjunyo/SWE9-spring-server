@@ -235,4 +235,89 @@ public class ChatServiceTest {
         //Then
         assertThat(chatRoom1).isFalse();
     }
+
+    //메세지 저장 api test --------------------------------------------------------------------------------
+    @Test
+    @DisplayName(value = "메세지 저장 성공 api test")
+    @Transactional
+    public void storeMessagesSuccessTest() {
+        //Given
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+
+        userRepository.save(buyer);
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setSellerId(seller.getIdx());
+        item.setTitle("test.title");
+        item.setPrice(1000L);
+
+        itemRepository.save(item);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setUser1Id(buyer.getIdx());
+        chatRoom.setUser2Id(seller.getIdx());
+        chatRoom.setItemId(item.getIdx());
+        chatRoom.setCreatedAt(LocalDateTime.now());
+
+        chatroomRepository.save(chatRoom);
+        //When
+        Boolean b = chatService.storeMessageText(buyer.getIdx(), chatRoom.getIdx(), "사랑해");
+        //Then
+        assertThat(b).isTrue();
+    }
+
+    @Test
+    @DisplayName(value = "메세지 저장 chatroom id 없어서 실패 api test")
+    @Transactional
+    public void storeMessageFailTest() {
+        //Given
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+
+        userRepository.save(buyer);
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setSellerId(seller.getIdx());
+        item.setTitle("test.title");
+        item.setPrice(1000L);
+
+        itemRepository.save(item);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setUser1Id(buyer.getIdx());
+        chatRoom.setUser2Id(seller.getIdx());
+        chatRoom.setItemId(item.getIdx());
+        chatRoom.setCreatedAt(LocalDateTime.now());
+
+        chatroomRepository.save(chatRoom);
+        //When
+        Boolean b = chatService.storeMessageText(buyer.getIdx(), 200L, "사랑해");
+        //Then
+        assertThat(b).isFalse();
+    }
+
+
 }
