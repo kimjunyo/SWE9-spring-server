@@ -1,13 +1,24 @@
 package com.team9.sungdaehanmarket.service;
 
+import com.team9.sungdaehanmarket.dto.ChatRoomsResponseDto;
+import com.team9.sungdaehanmarket.entity.ChatRoom;
 import com.team9.sungdaehanmarket.entity.Item;
+import com.team9.sungdaehanmarket.entity.Message;
 import com.team9.sungdaehanmarket.entity.User;
+import com.team9.sungdaehanmarket.repository.ChatRoomRepository;
+import com.team9.sungdaehanmarket.repository.ItemRepository;
+import com.team9.sungdaehanmarket.repository.MessageRepository;
+import com.team9.sungdaehanmarket.repository.UserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,9 +38,114 @@ public class ChatServiceTest {
     @Autowired
     private ChatService chatService;
 
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ChatRoomRepository chatroomRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
+
+    //채팅방 가져오기 api 테스트 --------------------------------------------------------------------------------
+    @Test
+    @DisplayName(value = "메세지 기록 없는 채팅방 가져오기 성공 테스트")
+    @Transactional
+    public void getChatRoomSuccessTest() {
+        //Given
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+
+        userRepository.save(buyer);
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setSellerId(seller.getIdx());
+        item.setTitle("test.title");
+        item.setPrice(1000L);
+
+        itemRepository.save(item);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setUser1Id(buyer.getIdx());
+        chatRoom.setUser2Id(seller.getIdx());
+        chatRoom.setItemId(item.getIdx());
+        chatRoom.setCreatedAt(LocalDateTime.now());
+
+        chatroomRepository.save(chatRoom);
+        //When
+        List<ChatRoomsResponseDto> chatRooms = chatService.getChatRooms(buyer.getIdx());
+        //Then
+        assertThat(chatRooms.get(0).getId()).isEqualTo(seller.getUsername());
+    }
+
+    @Test
+    @DisplayName(value = "메세지 기록 있는 채팅방 가져오기 성공 테스트")
+    @Transactional
+    public void getChatRoomAndMessagesSuccessTest() {
+        //Given
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+
+        userRepository.save(buyer);
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setSellerId(seller.getIdx());
+        item.setTitle("test.title");
+        item.setPrice(1000L);
+
+        itemRepository.save(item);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setUser1Id(buyer.getIdx());
+        chatRoom.setUser2Id(seller.getIdx());
+        chatRoom.setItemId(item.getIdx());
+        chatRoom.setCreatedAt(LocalDateTime.now());
+
+        chatroomRepository.save(chatRoom);
+
+        Message message = new Message();
+        message.setChatRoom(chatRoom);
+        message.setIsSellerMessage(true);
+        message.setSenderId(seller.getIdx());
+        message.setContent("사랑해");
+
+        messageRepository.save(message);
+        //When
+        List<ChatRoomsResponseDto> chatRooms = chatService.getChatRooms(buyer.getIdx());
+        //Then
+        assertThat(chatRooms.get(0).getLastMessage()).isEqualTo(message.getContent());
+    }
+
+    //채팅방 생성 테스트 --------------------------------------------------------------------------------
+
     @Test
     @DisplayName(value = "채팅방 생성 성공 테스트")
-    public void chatRoomCreateSuccessTest() {
+    public void createChatRoomSuccessTest() {
         //Given
         User buyer = new User();
         buyer.setIdx(998L);
@@ -60,7 +176,7 @@ public class ChatServiceTest {
 
     @Test
     @DisplayName(value = "채팅방 생성 아이템 idx 실패 테스트")
-    public void chatRoomCreateItemFailureTest() {
+    public void createChatRoomItemFailureTest() {
         //Given
         User buyer = new User();
         buyer.setIdx(998L);
@@ -91,7 +207,7 @@ public class ChatServiceTest {
 
     @Test
     @DisplayName(value = "채팅방 생성 유저 idx 실패 테스트")
-    public void chatRoomCreateUserFailureTest() {
+    public void createChatRoomUserFailureTest() {
         //Given
         User buyer = new User();
         buyer.setIdx(998L);
