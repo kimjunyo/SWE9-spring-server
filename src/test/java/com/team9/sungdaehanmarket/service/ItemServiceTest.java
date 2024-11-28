@@ -239,17 +239,78 @@ public class ItemServiceTest {
     @DisplayName(value = "좋아요 누른 아이템 가져오기 test")
     public void getLikeItems(){
         //Given
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+        seller.setMajor("보건학과");
+
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setTitle("전공 서적");
+        item.setPrice(10000L);
+        item.setSellerId(seller.getIdx());
+        item.setPhotos(List.of());
+        item.setLikes(3);
+        item.setUploadedAt(LocalDate.now());
+
+        itemRepository.save(item);
+
+        Set<Long> favoriteItems = new HashSet<>();
+        favoriteItems.add(item.getIdx());
+
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+        buyer.setRating(1.0f);
+        buyer.setMajor("수학과");
+        buyer.setFavoriteItems(favoriteItems);
+
+        userRepository.save(buyer);
         //When
+        List<ItemResponseDto> likedItems = itemService.getLikedItems(buyer.getIdx());
         //Then
+        assertThat(likedItems.get(0)).isNotNull();
     }
 
     @Test
     @Transactional
-    @DisplayName(value = "판매한 아이템 가져오기 test")
+    @DisplayName(value = "판매 중인 아이템 가져오기 test")
     public void getSellingItems(){
         //Given
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+        seller.setMajor("보건학과");
+
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setTitle("전공 서적");
+        item.setPrice(10000L);
+        item.setSellerId(seller.getIdx());
+        item.setPhotos(List.of());
+        item.setLikes(3);
+        item.setUploadedAt(LocalDate.now());
+        item.setIsSold(false);
+
+        itemRepository.save(item);
         //When
+        List<ItemResponseDto> sellingItems = itemService.getSellingItems(seller.getIdx());
         //Then
+        assertThat(sellingItems.get(0)).isNotNull();
     }
 
     @Test
