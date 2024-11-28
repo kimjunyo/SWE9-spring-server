@@ -2,6 +2,7 @@ package com.team9.sungdaehanmarket.service;
 
 import com.team9.sungdaehanmarket.dto.ItemDetailResponse;
 import com.team9.sungdaehanmarket.dto.ItemResponseDto;
+import com.team9.sungdaehanmarket.dto.PurchasedItemDetailDto;
 import com.team9.sungdaehanmarket.entity.Item;
 import com.team9.sungdaehanmarket.entity.User;
 import com.team9.sungdaehanmarket.repository.ItemRepository;
@@ -21,8 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 public class ItemServiceTest {
@@ -362,8 +362,43 @@ public class ItemServiceTest {
     @DisplayName(value = "아이템 구매후기 가져오기 test")
     public void getItemRatingInfo(){
         //Given
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+        seller.setMajor("보건학과");
+
+        userRepository.save(seller);
+
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+        buyer.setRating(1.0f);
+        buyer.setMajor("수학과");
+
+        userRepository.save(buyer);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setTitle("전공 서적");
+        item.setPrice(10000L);
+        item.setSellerId(seller.getIdx());
+        item.setPhotos(List.of());
+        item.setLikes(3);
+        item.setUploadedAt(LocalDate.now());
+        item.setIsSold(true);
+        item.setBuyerId(buyer.getIdx());
+
+        itemRepository.save(item);
         //When
+        PurchasedItemDetailDto itemRatingInfo = itemService.getItemRatingInfo(buyer.getIdx(), item.getIdx());
         //Then
+        assertThat(itemRatingInfo).isNotNull();
     }
 
     @Test
@@ -371,7 +406,45 @@ public class ItemServiceTest {
     @DisplayName(value = "아이템 구매후기 저장 test")
     public void saveRating(){
         //Given
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+        seller.setMajor("보건학과");
+        seller.setRating(1.0f);
+        seller.setRatingSum(2.5f);
+        seller.setRatingCount(2);
+
+        userRepository.save(seller);
+
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+        buyer.setRating(1.0f);
+        buyer.setMajor("수학과");
+
+        userRepository.save(buyer);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setTitle("전공 서적");
+        item.setPrice(10000L);
+        item.setSellerId(seller.getIdx());
+        item.setPhotos(List.of());
+        item.setLikes(3);
+        item.setUploadedAt(LocalDate.now());
+        item.setIsSold(true);
+        item.setBuyerId(buyer.getIdx());
+
+        itemRepository.save(item);
         //When
         //Then
+        assertThatCode(() -> itemService.saveRating(item.getIdx(), seller.getIdx(), 4.0f)).
+                doesNotThrowAnyException();
     }
 }
