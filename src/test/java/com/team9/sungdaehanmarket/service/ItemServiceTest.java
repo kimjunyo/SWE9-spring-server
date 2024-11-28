@@ -318,8 +318,43 @@ public class ItemServiceTest {
     @DisplayName(value = "구매한 아이템 가져오기 test")
     public void getBuyingItems(){
         //Given
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+        seller.setMajor("보건학과");
+
+        userRepository.save(seller);
+
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+        buyer.setRating(1.0f);
+        buyer.setMajor("수학과");
+
+        userRepository.save(buyer);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setTitle("전공 서적");
+        item.setPrice(10000L);
+        item.setSellerId(seller.getIdx());
+        item.setPhotos(List.of());
+        item.setLikes(3);
+        item.setUploadedAt(LocalDate.now());
+        item.setIsSold(true);
+        item.setBuyerId(buyer.getIdx());
+
+        itemRepository.save(item);
         //When
+        List<ItemResponseDto> likedItems = itemService.getBuyingItems(buyer.getIdx());
         //Then
+        assertThat(likedItems.get(0)).isNotNull();
     }
 
     @Test
