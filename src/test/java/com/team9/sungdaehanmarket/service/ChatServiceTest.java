@@ -2,6 +2,7 @@ package com.team9.sungdaehanmarket.service;
 
 import com.team9.sungdaehanmarket.dto.ChatRoomDetailDto;
 import com.team9.sungdaehanmarket.dto.ChatRoomsResponseDto;
+import com.team9.sungdaehanmarket.dto.MessageResponseDto;
 import com.team9.sungdaehanmarket.entity.ChatRoom;
 import com.team9.sungdaehanmarket.entity.Item;
 import com.team9.sungdaehanmarket.entity.Message;
@@ -492,6 +493,110 @@ public class ChatServiceTest {
         ChatRoomDetailDto chatRoomDetail = chatService.getChatRoomDetail(200L, buyer.getIdx());
         //Then
         assertThat(chatRoomDetail).isNull();
+    }
+
+    @Test
+    @DisplayName(value = "메세지 목록 가져오기 성공 test")
+    @Transactional
+    public void getMessagesSuccessTest() {
+        //Given
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+        buyer.setRating(1.0f);
+
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+
+        userRepository.save(buyer);
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setSellerId(seller.getIdx());
+        item.setTitle("test.title");
+        item.setPrice(1000L);
+        item.setPhotos(List.of("서적"));
+
+        itemRepository.save(item);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setUser1Id(buyer.getIdx());
+        chatRoom.setUser2Id(seller.getIdx());
+        chatRoom.setItemId(item.getIdx());
+        chatRoom.setCreatedAt(LocalDateTime.now());
+
+        chatroomRepository.save(chatRoom);
+
+        Message message = new Message();
+        message.setSenderId(seller.getIdx());
+        message.setContent("사랑해");
+        message.setChatRoom(chatRoom);
+
+        messageRepository.save(message);
+        //When
+        List<MessageResponseDto> messages = chatService.getMessages(chatRoom.getIdx(), seller.getIdx());
+        //Then
+        assertThat(messages.get(0).getData()).isEqualTo(message.getContent());
+    }
+
+    @Test
+    @DisplayName(value = "메세지 목록 가져오기 실패 test")
+    @Transactional
+    public void getMessagesFailTest() {
+        //Given
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+        buyer.setRating(1.0f);
+
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+
+        userRepository.save(buyer);
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setSellerId(seller.getIdx());
+        item.setTitle("test.title");
+        item.setPrice(1000L);
+        item.setPhotos(List.of("서적"));
+
+        itemRepository.save(item);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setUser1Id(buyer.getIdx());
+        chatRoom.setUser2Id(seller.getIdx());
+        chatRoom.setItemId(item.getIdx());
+        chatRoom.setCreatedAt(LocalDateTime.now());
+
+        chatroomRepository.save(chatRoom);
+
+        Message message = new Message();
+        message.setSenderId(seller.getIdx());
+        message.setContent("사랑해");
+        message.setChatRoom(chatRoom);
+
+        messageRepository.save(message);
+        //When
+        List<MessageResponseDto> messages = chatService.getMessages(2000L, seller.getIdx());
+        //Then
+        assertThat(messages).isNull();
     }
 
 
