@@ -1,5 +1,6 @@
 package com.team9.sungdaehanmarket.service;
 
+import com.team9.sungdaehanmarket.dto.ItemDetailResponse;
 import com.team9.sungdaehanmarket.dto.ItemResponseDto;
 import com.team9.sungdaehanmarket.entity.Item;
 import com.team9.sungdaehanmarket.entity.User;
@@ -14,6 +15,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -181,8 +183,55 @@ public class ItemServiceTest {
     @DisplayName(value = "아이템 상세정보 test")
     public void getItemDetail(){
         //Given
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+        seller.setMajor("보건학과");
+
+        userRepository.save(seller);
+
+        Item item = new Item();
+        item.setCategory(Item.Category.TEXTBOOK);
+        item.setTitle("전공 서적");
+        item.setPrice(10000L);
+        item.setSellerId(seller.getIdx());
+        item.setPhotos(List.of());
+        item.setLikes(3);
+        item.setUploadedAt(LocalDate.now());
+
+        Item item2 = new Item();
+        item2.setCategory(Item.Category.TEXTBOOK);
+        item2.setTitle("전공 서적");
+        item2.setPrice(10000L);
+        item2.setSellerId(2000L);
+        item2.setPhotos(List.of());
+        item2.setLikes(3);
+        item2.setUploadedAt(LocalDate.now());
+
+        itemRepository.save(item);
+        itemRepository.save(item2);
+
+        User buyer = new User();
+        buyer.setEmail("kimjunyo@gmail.com");
+        buyer.setPassword("test");
+        buyer.setName("test");
+        buyer.setUsername("kimjunyo");
+        buyer.setRating(1.0f);
+        buyer.setMajor("수학과");
+
+        userRepository.save(buyer);
         //When
+        ItemDetailResponse itemDetail = itemService.getItemDetail(item.getIdx(), buyer.getIdx());
+        ItemDetailResponse itemDetail2 = itemService.getItemDetail(item2.getIdx(), buyer.getIdx());
+        ItemDetailResponse itemDetail3 = itemService.getItemDetail(2000L, buyer.getIdx());
         //Then
+        assertThat(itemDetail.getContent().getSellerName()).isEqualTo(seller.getName());
+        assertThat(itemDetail2.getContent().getSellerName()).isEqualTo("Unknown");
+        assertThat(itemDetail3.getContent()).isNull();
     }
 
     @Test
