@@ -9,12 +9,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @SpringBootTest
 public class ItemServiceTest {
@@ -76,16 +80,86 @@ public class ItemServiceTest {
         //When
         List<ItemResponseDto> items = itemService.getItems(buyer.getIdx());
         //Then
-        assertThat(items.get(items.size()-2).getItemImage()).isNull();
-        assertThat(items.get(items.size()-2).getAuthorMajor()).isNull();
-        assertThat(items.get(items.size()-1).getAuthorMajor()).isNotNull();
-        assertThat(items.get(items.size()-1).getItemImage()).isNotNull();
+        assertThat(items.get(items.size() - 2).getItemImage()).isNull();
+        assertThat(items.get(items.size() - 2).getAuthorMajor()).isNull();
+        assertThat(items.get(items.size() - 1).getAuthorMajor()).isNotNull();
+        assertThat(items.get(items.size() - 1).getItemImage()).isNotNull();
     }
 
     @Test
     @Transactional
     @DisplayName(value = "아이템 등록 test")
-    public void registerItem() {
+    public void registerItem() throws IOException {
+        //Given
+        User seller = new User();
+        seller.setEmail("bomin@gmail.com");
+        seller.setPassword("test2");
+        seller.setName("test2");
+        seller.setUsername("bomin");
+        seller.setRating(1.0f);
+        seller.setProfileImage("예쁜사진");
+        seller.setMajor("보건학과");
+
+        userRepository.save(seller);
+
+        MockMultipartFile file = new MockMultipartFile(
+                "홍길동전 썸네일 이미지",
+                "thumbnail.png",
+                MediaType.IMAGE_PNG_VALUE,
+                "thumbnail".getBytes()
+        );
+        //When
+        //Then
+        assertThatCode(() -> itemService.registerItem(seller.getIdx(), "생물 서적", 20000L, true, List.of(file), Item.Category.TEXTBOOK.toString(), "안녕 클레오파트라")).
+                doesNotThrowAnyException();
+    }
+
+    @Test
+    @Transactional
+    @DisplayName(value = "아이템 좋아요 test")
+    public void likeItem(){
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName(value = "아이템 상세정보 test")
+    public void getItemDetail(){
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName(value = "좋아요 누른 아이템 가져오기 test")
+    public void getLikeItems(){
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName(value = "판매한 아이템 가져오기 test")
+    public void getSellingItems(){
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName(value = "구매한 아이템 가져오기 test")
+    public void getBuyingItems(){
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName(value = "아이템 구매후기 가져오기 test")
+    public void getItemRatingInfo(){
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName(value = "아이템 구매후기 저장 test")
+    public void saveRating(){
 
     }
 }
