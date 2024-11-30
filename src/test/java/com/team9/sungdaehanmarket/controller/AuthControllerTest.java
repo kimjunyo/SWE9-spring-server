@@ -43,7 +43,7 @@ public class AuthControllerTest {
         userRepository.save(user);
 
         Map<String, String> loginRequest = new HashMap<>();
-        loginRequest.put("id", "testUser");
+        loginRequest.put("id", "kimjunyo");
         loginRequest.put("password", "testPassword");
 
         // When
